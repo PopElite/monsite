@@ -1,0 +1,188 @@
+<html><head><base href="https://websim.universe/revolution">
+<meta charset="UTF-8">
+<title>Elite FREELANCING</title>
+<style>
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #1a1a2e, #16213e);
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+}
+
+.robot {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    transition: transform 0.1s ease-out;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.content {
+    position: relative;
+    z-index: 2;
+    padding: 2rem;
+    text-align: center;
+}
+
+h1 {
+    font-size: 3.5rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.tech-box {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+.tech-box:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+    to {
+        text-shadow: 0 0 20px rgba(0, 255, 255, 0.8),
+                     0 0 30px rgba(0, 255, 255, 0.6);
+    }
+}
+
+.particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+</style>
+</head>
+<body>
+
+<svg class="robot" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="45" fill="none" stroke="#00fff0" stroke-width="2"/>
+    <circle cx="50" cy="50" r="35" fill="none" stroke="#00fff0" stroke-width="2"/>
+    <circle cx="50" cy="50" r="25" fill="#00fff0" opacity="0.3"/>
+    <circle class="robot-eye" cx="50" cy="50" r="5" fill="#00fff0"/>
+</svg>
+
+<div class="content">
+    <h1>Elite FREELANCING</h1>
+    <div class="tech-grid">
+        <div class="tech-box">
+            <h3>Independance Financière</h3>
+            <p> Génère tes 200e par jours et plus </p>
+        </div>
+        <div class="tech-box">
+            <h3> Travail avec des milliers de Clients </h3>
+            <p>La nouvelle ère du travail en ligne</p>
+        </div>
+        <div class="tech-box">
+            <h3> Une passion - Un job </h3>
+            <p> Utilise tes compétences et ta passion pour générer tes millions </p>
+        </div>
+    </div>
+</div>
+
+<canvas class="particles"></canvas>
+
+<script>
+// Robot suiveur de souris
+document.addEventListener('mousemove', (e) => {
+    const robot = document.querySelector('.robot');
+    const robotEye = document.querySelector('.robot-eye');
+    
+    // Position de la souris
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+    
+    // Position du robot
+    const robotX = mouseX - robot.clientWidth / 2;
+    const robotY = mouseY - robot.clientHeight / 2;
+    
+    // Animation fluide du robot
+    robot.style.transform = `translate(${robotX}px, ${robotY}px)`;
+    
+    // Calcul de l'angle pour l'œil du robot
+    const rect = robot.getBoundingClientRect();
+    const robotCenterX = rect.left + rect.width / 2;
+    const robotCenterY = rect.top + rect.height / 2;
+    const angle = Math.atan2(mouseY - robotCenterY, mouseX - robotCenterX);
+    const distance = Math.min(10, Math.hypot(mouseX - robotCenterX, mouseY - robotCenterY) / 10);
+    
+    robotEye.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`;
+});
+
+// Animation des particules
+const canvas = document.querySelector('.particles');
+const ctx = canvas.getContext('2d');
+
+// Ajuster la taille du canvas
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+// Création des particules
+const particles = [];
+for(let i = 0; i < 100; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 3,
+        speedX: Math.random() * 2 - 1,
+        speedY: Math.random() * 2 - 1
+    });
+}
+
+// Animation des particules
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    particles.forEach(particle => {
+        particle.x += particle.speedX;
+        particle.y += particle.speedY;
+        
+        // Rebond sur les bords
+        if(particle.x < 0 || particle.x > canvas.width) particle.speedX *= -1;
+        if(particle.y < 0 || particle.y > canvas.height) particle.speedY *= -1;
+        
+        // Dessin des particules
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0, 255, 240, 0.5)';
+        ctx.fill();
+    });
+    
+    requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
+</body>
+</html>
